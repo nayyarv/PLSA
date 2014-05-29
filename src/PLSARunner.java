@@ -8,17 +8,22 @@ public class PLSARunner {
 		int topToShow = 10;
 		
 		Vector<Rating> ratings = new Vector<Rating>();
+
+        String filesrc = System.getProperty("user.dir")+"/ml-1M";
 		
 		//BufferedReader br = new BufferedReader(new FileReader("ml-100K/u.data"));
-		BufferedReader br = new BufferedReader(new FileReader("/Users/robert/Documents/ScalaWorkspace/LocalRec/ml-1M/ratings.dat"));
+
+        System.out.println("Reading Ratings");
+		BufferedReader br = new BufferedReader(new FileReader(filesrc+"/ratings.dat"));
 		while (br.ready()){
 			Scanner tk = new Scanner(br.readLine());
 			tk.useDelimiter("::");
 			ratings.add(new Rating(tk.nextInt(), tk.nextInt(),tk.nextInt(),tk.nextInt(),1));
 		}
 		br.close();
-		
+        System.out.println("Finished Ratings");
 		PLSADoubles model = new PLSADoubles(20, classes);
+        System.out.println("Onto Normalisation");
 		NormalisationModel normalise = new NormalisationModel(model, 15);
 		
 		normalise.doFold(ratings, 0);
@@ -26,7 +31,8 @@ public class PLSARunner {
 		HashMap<Integer, String> movieTitles = new HashMap<Integer, String>();
 		
 		//BufferedReader brm = new BufferedReader(new FileReader("/Users/robert/Documents/ScalaWorkspace/LocalRec/ml-100K/u.item"));
-		BufferedReader brm = new BufferedReader(new FileReader("/Users/robert/Documents/ScalaWorkspace/LocalRec/ml-1M/movies.dat"));
+		BufferedReader brm = new BufferedReader(new FileReader(filesrc+"/movies.dat"));
+        System.out.println("Reading Movies");
 		while (brm.ready()){
 			Scanner tk = new Scanner(brm.readLine());
 			//tk.useDelimiter("\\|");
@@ -36,6 +42,7 @@ public class PLSARunner {
 			movieTitles.put(movie, title);
 		}
 		brm.close();
+        System.out.println("Finished Movies");
 		
 		for (int c = 0 ; c < classes; c++){
 			PriorityQueue <OrderedPair<Double, String> > pq = new PriorityQueue<OrderedPair<Double, String>>();
